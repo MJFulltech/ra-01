@@ -84,7 +84,7 @@ int main(void)
 	sx127x_conf.frequency_hz = 434000000;
 	sx127x_conf.frequency_mode = SX127X_LOW_FREQUENCY_MODE;
 	sx127x_conf.is_auto_agc_on = true;
-	sx127x_conf.tx_power_level_dbm = 13;
+	sx127x_conf.tx_power_level_dbm = 17;
 	sx127x_conf.pa_output_pin = SX127X_PA_SELECT_PA_BOOST_PIN;
 
 	uart_send_string("Start Ra-01 sender\r\n");
