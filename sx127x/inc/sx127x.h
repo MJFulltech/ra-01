@@ -181,8 +181,8 @@ typedef struct
 sx127x_result_t sx127x_lora_init(sx127x_configuration_t* sx127x_conf);
 sx127x_result_t sx127x_lora_receive_data(sx127x_spi_configuration_t* spi_conf, uint8_t* data, uint8_t data_size, uint8_t timeout_ms);
 sx127x_result_t sx127x_lora_send_data(sx127x_spi_configuration_t* spi_conf, uint8_t* data, uint8_t data_size, uint8_t timeout_ms);
-sx127x_result_t sx127x_lora_get_rssi(sx127x_configuration_t* sx127x_conf, uint8_t* rssi);
-sx127x_result_t sx127x_lora_get_snr(sx127x_configuration_t* sx127x_conf, uint8_t* snr);
+sx127x_result_t sx127x_lora_get_packet_rssi(sx127x_configuration_t* sx127x_conf, uint8_t* rssi);
+sx127x_result_t sx127x_lora_get_packet_snr(sx127x_configuration_t* sx127x_conf, uint8_t* snr);
 
 #ifdef __cplusplus
 }

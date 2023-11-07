@@ -127,12 +127,12 @@ int main(void)
 		{
 			uart_send_string("Error receiving data\r\n");
 		}
-		result = sx127x_lora_get_rssi(&sx127x_conf, &rssi);
+		result = sx127x_lora_get_packet_rssi(&sx127x_conf, &rssi);
 		if (result != SX127X_STATUS_OK)
 		{
 			uart_send_string("Error getting RSSI\r\n");
 		}
-		result = sx127x_lora_get_snr(&sx127x_conf, &snr);
+		result = sx127x_lora_get_packet_snr(&sx127x_conf, &snr);
 		if (result != SX127X_STATUS_OK)
 		{
 			uart_send_string("Error getting SNR\r\n");
@@ -142,7 +142,7 @@ int main(void)
 			uart_send_string("\r\n/******************************/\r\n");
 			uart_send_string("Received data:\r\n");
 			uart_send_char_array(&data[0], MAX_DATA_SIZE);
-			uart_send_string("\r\n Last received packet RSSI [dBm]: ");
+			uart_send_string("\r\nLast received packet RSSI [dBm]: -");
 			uart_send_number(rssi);
 			uart_send_string("\r\nLast received packet SNR [dB]: ");
 			uart_send_number(snr);

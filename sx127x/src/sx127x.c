@@ -497,17 +497,28 @@ sx127x_result_t sx127x_lora_set_coding_rate(sx127x_spi_configuration_t* spi_conf
 	return result;
 }
 
-sx127x_result_t sx127x_lora_get_rssi(sx127x_configuration_t* sx127x_conf, uint8_t* rssi)
+sx127x_result_t sx127x_lora_get_packet_rssi(sx127x_configuration_t* sx127x_conf, uint8_t* rssi)
 {
 	sx127x_result_t result = SX127X_STATUS_OK;
-	result = (*sx127x_conf->spi_conf->spi_read_register_function)(sx127x_conf->spi_conf->spi_hal, SX127X_REG_PACKET_RSSI_VALUE, rssi);
+	uint8_t reg_rssi;
+	result = (*sx127x_conf->spi_conf->spi_read_register_function)(sx127x_conf->spi_conf->spi_hal, SX127X_REG_PACKET_RSSI_VALUE, &reg_rssi);
+	if (sx127x_conf->frequency_mode == SX127X_HIGH_FREQUENCY_MODE)
+	{
+		*rssi = 157 - reg_rssi * 1.0667;
+	}
+	else
+	{
+		*rssi = 164 - reg_rssi * 1.0667;
+	}
 	return result;
 }
 
-sx127x_result_t sx127x_lora_get_snr(sx127x_configuration_t* sx127x_conf, uint8_t* snr)
+sx127x_result_t sx127x_lora_get_packet_snr(sx127x_configuration_t* sx127x_conf, uint8_t* snr)
 {
 	sx127x_result_t result = SX127X_STATUS_OK;
-	result = (*sx127x_conf->spi_conf->spi_read_register_function)(sx127x_conf->spi_conf->spi_hal, SX127X_REG_PACKET_SNR_VALUE, snr);
+	uint8_t reg_snr;
+	result = (*sx127x_conf->spi_conf->spi_read_register_function)(sx127x_conf->spi_conf->spi_hal, SX127X_REG_PACKET_SNR_VALUE, &reg_snr);
+	*snr = reg_snr / 4;
 	return result;
 }
 
