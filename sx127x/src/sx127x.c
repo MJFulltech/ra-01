@@ -30,10 +30,7 @@ sx127x_result_t sx127x_lora_set_ocp(sx127x_spi_configuration_t* spi_conf, uint8_
 	}
 
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_OCP, &reg_ocp);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
 
 	reg_ocp &= 0xC0;
 	// SET OCP ON
@@ -49,10 +46,8 @@ sx127x_result_t sx127x_set_op_mode_range(sx127x_spi_configuration_t* spi_conf, s
 	uint8_t reg_op_mode;
 	sx127x_result_t result = SX127X_STATUS_OK;
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_OP_MODE, &reg_op_mode);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
+
 	reg_op_mode &= 0x7F;
 	reg_op_mode |= ((uint8_t)op_mode_range << 7);
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_OP_MODE, reg_op_mode);
@@ -64,10 +59,8 @@ sx127x_result_t sx127x_lora_set_lna_boost_gain(sx127x_spi_configuration_t* spi_c
 	uint8_t reg_lna;
 	sx127x_result_t result = SX127X_STATUS_OK;
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_LNA, &reg_lna);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
+
 	reg_lna &= 0x1F;
 	reg_lna |= ((uint8_t)lna_boost_gain << 5);
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_LNA, reg_lna);
@@ -78,10 +71,8 @@ sx127x_result_t sx127x_lora_zero_tx_rx_registers(sx127x_spi_configuration_t* spi
 {
 	sx127x_result_t result = SX127X_STATUS_OK;
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_FIFO_TX_BASE_ADDR, 0);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
+
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_FIFO_RX_BASE_ADDR, 0);
 	return result;
 }
@@ -92,10 +83,7 @@ sx127x_result_t sx127x_lora_set_rx_payload_crc(sx127x_spi_configuration_t* spi_c
 	uint8_t reg_config2;
 
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_MODEM_CONFIG2, &reg_config2);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
 
 	reg_config2 &= 0xFB;
 	reg_config2 |= ((uint8_t)is_rx_payload_crc_on << 2);
@@ -113,15 +101,11 @@ sx127x_result_t sx127x_lora_set_frequency(sx127x_spi_configuration_t* spi_conf, 
 						(uint8_t)(carrier_frequency >> 8),
 						(uint8_t)(carrier_frequency)};
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_FRF_MSB, f_rf[0]);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
+
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_FRF_MID, f_rf[1]);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
+
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_FRF_LSB, f_rf[2]);
 	return result;
 }
@@ -139,10 +123,7 @@ sx127x_result_t sx127x_lora_set_tx_power(sx127x_spi_configuration_t* spi_conf, u
 		// Select max output power and pin output = 0
 		tx_output_power_dbm |= 0x70;
 		result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_PA_CONFIG, tx_output_power_dbm);
-		if (result != SX127X_STATUS_OK)
-		{
-			return SX127X_STATUS_HAL_SPI_ERROR;
-		}
+		if (result != SX127X_STATUS_OK) return result;
 	}
 	else
 	{
@@ -157,17 +138,14 @@ sx127x_result_t sx127x_lora_set_tx_power(sx127x_spi_configuration_t* spi_conf, u
 
 			uint8_t reg_pa_dac;
 			result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_PA_DAC, &reg_pa_dac);
-			if (result != SX127X_STATUS_OK) return SX127X_STATUS_HAL_SPI_ERROR;
+			if (result != SX127X_STATUS_OK) return result;
 			reg_pa_dac &= 0xF8;
 			reg_pa_dac |= SX127X_PA_MAX_DAC_VALUE;
 			result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_PA_DAC, reg_pa_dac);
-			if (result != SX127X_STATUS_OK) return SX127X_STATUS_HAL_SPI_ERROR;
+			if (result != SX127X_STATUS_OK) return result;
 
 			result = sx127x_lora_set_ocp(spi_conf, 140);
-			if (result != SX127X_STATUS_OK)
-			{
-				return SX127X_STATUS_HAL_SPI_ERROR;
-			}
+			if (result != SX127X_STATUS_OK) return result;
 		}
 		else
 		{
@@ -178,17 +156,15 @@ sx127x_result_t sx127x_lora_set_tx_power(sx127x_spi_configuration_t* spi_conf, u
 			}
 			uint8_t reg_pa_dac;
 			result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_PA_DAC, &reg_pa_dac);
-			if (result != SX127X_STATUS_OK) return SX127X_STATUS_HAL_SPI_ERROR;
+			if (result != SX127X_STATUS_OK) return result;
+
 			reg_pa_dac &= 0xF8;
 			reg_pa_dac |= SX127X_PA_DEFAULT_DAC_VALUE;
 			result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_PA_DAC, reg_pa_dac);
-			if (result != SX127X_STATUS_OK) return SX127X_STATUS_HAL_SPI_ERROR;
+			if (result != SX127X_STATUS_OK) return result;
 
 			result = sx127x_lora_set_ocp(spi_conf, 100);
-			if (result != SX127X_STATUS_OK)
-			{
-				return SX127X_STATUS_HAL_SPI_ERROR;
-			}
+			if (result != SX127X_STATUS_OK) return result;
 		}
 		result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_PA_CONFIG, SX127X_PA_BOOST | (tx_output_power_dbm - 2));
 	}
@@ -200,10 +176,8 @@ sx127x_result_t sx127x_set_op_mode(sx127x_spi_configuration_t* spi_conf, sx127x_
 	sx127x_result_t result = SX127X_STATUS_OK;
 	uint8_t reg_op_mode;
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_OP_MODE, &reg_op_mode);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
+
 	reg_op_mode &= 0xF8;
 	reg_op_mode |= op_mode;
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_OP_MODE, reg_op_mode);
@@ -225,10 +199,8 @@ sx127x_result_t sx127x_lora_set_auto_agc(sx127x_spi_configuration_t* spi_conf, b
 	sx127x_result_t result = SX127X_STATUS_OK;
 	uint8_t reg_config3;
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_MODEM_CONFIG_3, &reg_config3);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
+
 	reg_config3 &= 0xFB;
 	reg_config3 |= ((uint8_t)is_auto_agc_on << 2);
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_MODEM_CONFIG_3, reg_config3);
@@ -240,10 +212,8 @@ sx127x_result_t sx127x_lora_set_header_mode(sx127x_spi_configuration_t* spi_conf
 	sx127x_result_t result = SX127X_STATUS_OK;
 	uint8_t reg_config1;
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_MODEM_CONFIG1, &reg_config1);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
+
 	reg_config1 &= 0xFE;
 	reg_config1 |= ((uint8_t)header_mode);
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_MODEM_CONFIG1, reg_config1);
@@ -255,10 +225,8 @@ sx127x_result_t sx127x_get_is_in_mode(sx127x_spi_configuration_t* spi_conf, sx12
 	sx127x_result_t result = SX127X_STATUS_OK;
 	uint8_t reg_op_mode;
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_OP_MODE, &reg_op_mode);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
+
 	*return_is_in_mode = (bool)((reg_op_mode & op_mode) == op_mode);
 	return result;
 }
@@ -276,20 +244,15 @@ sx127x_result_t sx127x_lora_get_is_transmitting(sx127x_spi_configuration_t* spi_
 	bool is_in_tx_mode;
 
 	result = sx127x_get_is_in_mode(spi_conf, SX127X_OP_MODE_TX, &is_in_tx_mode);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
+
 	if (is_in_tx_mode)
 	{
 		*result_is_transmitting = true;
 	}
 
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_IRQ_FLAGS, &reg_irq_flags);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
 
 	if (reg_irq_flags & SX127X_IRQ_TX_DONE_MASK)
 	{
@@ -435,10 +398,7 @@ sx127x_result_t sx127x_lora_set_spreading_factor(sx127x_spi_configuration_t* spi
 	uint8_t reg_config2;
 
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_MODEM_CONFIG2, &reg_config2);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
 
 	reg_config2 &= 0x0F;
 	reg_config2 |= ((uint8_t)spreading_factor << 4);
@@ -452,10 +412,7 @@ sx127x_result_t sx127x_lora_set_bandwidth(sx127x_spi_configuration_t* spi_conf, 
 	uint8_t reg_config1;
 
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_MODEM_CONFIG1, &reg_config1);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
 
 	reg_config1 &= 0x0F;
 	reg_config1 |= ((uint8_t)bandwidth_khz << 4);
@@ -469,10 +426,7 @@ sx127x_result_t sx127x_lora_set_frequency_mode(sx127x_spi_configuration_t* spi_c
 	uint8_t reg_op_mode;
 
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_OP_MODE, &reg_op_mode);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
 
 	reg_op_mode &= 0xF7;
 	reg_op_mode |= ((uint8_t)frequency_mode << 3);
@@ -486,10 +440,7 @@ sx127x_result_t sx127x_lora_set_coding_rate(sx127x_spi_configuration_t* spi_conf
 	uint8_t reg_config1;
 
 	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_MODEM_CONFIG1, &reg_config1);
-	if (result != SX127X_STATUS_OK)
-	{
-		return SX127X_STATUS_HAL_SPI_ERROR;
-	}
+	if (result != SX127X_STATUS_OK) return result;
 
 	reg_config1 &= 0xF1;
 	reg_config1 |= ((uint8_t)coding_rate << 1);
