@@ -135,6 +135,7 @@ typedef struct
 	sx127x_bandwidth_khz_t bandwidth_khz;
 	sx127x_frequency_mode_t frequency_mode;
 	sx127x_coding_rate_t coding_rate;
+	sx127x_header_mode_t header_mode;
 	bool is_rx_payload_crc_on;
 	uint32_t frequency_hz;
 	bool is_auto_agc_on;

@@ -277,9 +277,6 @@ sx127x_result_t sx127x_lora_send_data(sx127x_spi_configuration_t* spi_conf, uint
 	result = sx127x_set_op_mode(spi_conf, SX127X_OP_MODE_STANDBY);
 	if (result != SX127X_STATUS_OK) return result;
 
-	result = sx127x_lora_set_header_mode(spi_conf, SX127X_OP_MODE_EXPLICIT_HEADER);
-	if (result != SX127X_STATUS_OK) return result;
-
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_FIFO_ADDR_PTR, 0);
 	if (result != SX127X_STATUS_OK) return result;
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_PAYLOAD_LENGTH, 0);
@@ -484,6 +481,9 @@ sx127x_result_t sx127x_lora_init(sx127x_configuration_t* sx127x_conf)
 
 		result = sx127x_set_op_mode_range(sx127x_conf->spi_conf, sx127x_conf->op_mode_range);
 		if (result != SX127X_STATUS_OK) break;
+
+		result = sx127x_lora_set_header_mode(sx127x_conf->spi_conf, sx127x_conf->header_mode);
+		if (result != SX127X_STATUS_OK) return result;
 
 		result = sx127x_lora_set_frequency(sx127x_conf->spi_conf, sx127x_conf->frequency_hz);
 		if (result != SX127X_STATUS_OK) break;

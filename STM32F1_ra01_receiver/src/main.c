@@ -78,6 +78,7 @@ int main(void)
 	sx127x_conf.lna_boost_gain = SX127X_LNA_GAIN_12DB;
 	sx127x_conf.is_rx_payload_crc_on = true;
 	sx127x_conf.bandwidth_khz = SX127X_BANDWIDTH_KHZ_125;
+	sx127x_conf.header_mode = SX127X_OP_MODE_EXPLICIT_HEADER;
 	sx127x_conf.spreading_factor = SX127X_SPREADING_FACTOR_8;
 	sx127x_conf.coding_rate = SX127X_CODING_RATE_4_6;
 	sx127x_conf.frequency_hz = 434000000;
