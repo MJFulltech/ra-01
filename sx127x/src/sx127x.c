@@ -282,14 +282,9 @@ sx127x_result_t sx127x_lora_send_data(sx127x_spi_configuration_t* spi_conf, uint
 	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_PAYLOAD_LENGTH, 0);
 	if (result != SX127X_STATUS_OK) return result;
 
-
-	uint8_t currentLength;
-	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_PAYLOAD_LENGTH, &currentLength);
-	if (result != SX127X_STATUS_OK) return result;
-
-	if ((currentLength + data_size) > 255)
+	if (data_size > 255)
 	{
-		data_size = 255 - currentLength;
+		return SX127X_STATUS_WRONG_INPUT;
 	}
 
 	for (size_t i = 0; i < data_size; i++)
@@ -298,7 +293,7 @@ sx127x_result_t sx127x_lora_send_data(sx127x_spi_configuration_t* spi_conf, uint
 		if (result != SX127X_STATUS_OK) return result;
 	}
 
-	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_PAYLOAD_LENGTH, currentLength + data_size);
+	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_PAYLOAD_LENGTH, data_size);
 	if (result != SX127X_STATUS_OK) return result;
 
 	result = sx127x_set_op_mode(spi_conf, SX127X_OP_MODE_TX);
