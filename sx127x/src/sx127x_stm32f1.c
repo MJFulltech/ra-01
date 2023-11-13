@@ -88,6 +88,19 @@ void config_uart(UART_HandleTypeDef* uart)
 	HAL_UART_Init(uart);
 }
 
+void config_irq(UART_HandleTypeDef* uart)
+{
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+
+	GPIO_InitTypeDef gpio;
+	gpio.Mode = GPIO_MODE_IT_RISING;
+	gpio.Pull = GPIO_PULLUP;
+	gpio.Pin = GPIO_PIN_1;
+	HAL_GPIO_Init(GPIOB, &gpio);
+
+	HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+}
+
 sx127x_result_t sx127x_read(SPI_HandleTypeDef* spi, const uint8_t address, int8_t* read_data, uint8_t read_size, uint32_t timeout)
 {
 	sx127x_result_t result = SX127X_STATUS_OK;
