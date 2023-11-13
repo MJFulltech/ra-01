@@ -374,13 +374,59 @@ sx127x_result_t sx127x_lora_receive_data(sx127x_spi_configuration_t* spi_conf, u
 
 		min_bytes_to_read = data_size <= bytes_to_read ? data_size : bytes_to_read;
 
-		for(int i = 0; i < min_bytes_to_read; i++)
+		for (int i = 0; i < min_bytes_to_read; i++)
 		{
 			result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_FIFO, &data[i]);
 			if (result != SX127X_STATUS_OK) return result;
 		}
 	}
 	result = sx127x_set_op_mode(spi_conf, SX127X_OP_MODE_RX);
+	return result;
+}
+
+sx127x_result_t sx127x_lora_read_data(sx127x_spi_configuration_t* spi_conf, uint8_t* data, uint8_t data_size, uint8_t timeout_ms)
+{
+	sx127x_result_t result = SX127X_STATUS_OK;
+	uint8_t bytes_to_read;
+	uint8_t fifo_rx_address;
+	uint8_t min_bytes_to_read = 0;
+	bool is_rx_done;
+	bool is_crc_in_payload;
+	bool is_crc_error;
+
+
+	result = sx127x_lora_get_rx_payload_crc(spi_conf, &is_crc_in_payload);
+	if (result != SX127X_STATUS_OK) return result;
+
+	if (is_crc_in_payload)
+	{
+		result = sx127x_lora_get_is_crc_error(spi_conf, &is_crc_error);
+		if (result != SX127X_STATUS_OK) return result;
+		if (is_crc_error)
+		{
+			return SX127X_STATUS_CRC_ERROR;
+		}
+	}
+
+	result = sx127x_lora_clear_irq(spi_conf, 0xFF);
+	if (result != SX127X_STATUS_OK) return result;
+
+	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_RX_BYTES_NUMBER, &bytes_to_read);
+	if (result != SX127X_STATUS_OK) return result;
+
+	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_FIFO_RX_CURRENT_ADDRESS, &fifo_rx_address);
+	if (result != SX127X_STATUS_OK) return result;
+
+	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_FIFO_ADDR_PTR, fifo_rx_address);
+	if (result != SX127X_STATUS_OK) return result;
+
+	min_bytes_to_read = data_size <= bytes_to_read ? data_size : bytes_to_read;
+
+	for (int i = 0; i < min_bytes_to_read; i++)
+	{
+		result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_FIFO, &data[i]);
+		if (result != SX127X_STATUS_OK) return result;
+	}
 	return result;
 }
 
