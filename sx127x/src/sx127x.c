@@ -220,6 +220,19 @@ sx127x_result_t sx127x_lora_set_header_mode(sx127x_spi_configuration_t* spi_conf
 	return result;
 }
 
+sx127x_result_t sx127x_lora_set_low_data_optimize(sx127x_spi_configuration_t* spi_conf, bool is_low_data_optimize_on)
+{
+	sx127x_result_t result = SX127X_STATUS_OK;
+	uint8_t reg_config3;
+	result = (*spi_conf->spi_read_register_function)(spi_conf->spi_hal, SX127X_REG_MODEM_CONFIG_3, &reg_config3);
+	if (result != SX127X_STATUS_OK) return result;
+
+	reg_config3 &= 0xF7;
+	reg_config3 |= ((uint8_t)is_low_data_optimize_on << 3);
+	result = (*spi_conf->spi_write_register_function)(spi_conf->spi_hal, SX127X_REG_MODEM_CONFIG_3, reg_config3);
+	return result;
+}
+
 sx127x_result_t sx127x_get_is_in_mode(sx127x_spi_configuration_t* spi_conf, sx127x_op_mode_t op_mode, bool* return_is_in_mode)
 {
 	sx127x_result_t result = SX127X_STATUS_OK;
